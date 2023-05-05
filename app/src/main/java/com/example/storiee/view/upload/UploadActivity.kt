@@ -26,7 +26,6 @@ import com.example.storiee.ViewModelFactory
 import com.example.storiee.data.local.UserPreference
 import com.example.storiee.databinding.ActivityUploadBinding
 import com.example.storiee.util.createCustomTempFile
-import com.example.storiee.util.rotateFile
 import com.example.storiee.view.main.MainActivity
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -108,7 +107,6 @@ class UploadActivity : AppCompatActivity() {
             val myFile = File(currentPhotoPath)
 
             myFile.let { file ->
-                rotateFile(file, isBackCamera = true)
                 getFile = file
                 binding.imagePreviewIV.setImageBitmap(BitmapFactory.decodeFile(file.path))
             }

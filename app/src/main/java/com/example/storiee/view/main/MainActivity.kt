@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
                 mainViewModel.getUserSession().observe(this){session ->
                     mainViewModel.getAllStories("Bearer " + session.token)
-                }
+                } 
 
                 mainViewModel.stories.observe(this){story ->
                     runRV(story)

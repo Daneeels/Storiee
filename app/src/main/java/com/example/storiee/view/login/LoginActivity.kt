@@ -5,13 +5,11 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.util.Patterns
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.doOnTextChanged
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -38,7 +36,6 @@ class LoginActivity : AppCompatActivity() {
 
         setupView()
         setupViewModel()
-        formValidation()
         setupAction()
     }
 
@@ -73,70 +70,40 @@ class LoginActivity : AppCompatActivity() {
             val email = binding.edLoginEmail.text.toString().trim()
             val password = binding.edLoginPassword.text.toString().trim()
 
-            if(!formValidation()){
+            if(!(email.isNotEmpty() && password.isNotEmpty())){
                 Toast.makeText(this@LoginActivity, "Something went wrong", Toast.LENGTH_LONG).show()
             }else{
 
-                loginViewModel.loginRequest(email,password)
+                if (password.length >= 8) {
+                    loginViewModel.loginRequest(email,password)
 
-                loginViewModel.message.observe(this) { messageStatus ->
-                    if (messageStatus == "success"){
-                        loginViewModel.login()
+                    loginViewModel.message.observe(this) { messageStatus ->
+                        if (messageStatus == "success"){
+                            loginViewModel.login()
 
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(intent)
-                        finish()
-                    }else if (messageStatus == "User not found"){
-                        Toast.makeText(this@LoginActivity, messageStatus.toString(), Toast.LENGTH_LONG).show()
-                    }else{
-                        Log.e("Cek status", messageStatus)
+                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(intent)
+                            finish()
+                        }else if (messageStatus == "User not found"){
+                            Toast.makeText(this@LoginActivity, messageStatus.toString(), Toast.LENGTH_LONG).show()
+                        }else{
+                            Log.e("Cek status", messageStatus)
+                        }
                     }
+                }
+                else{
+                    Toast.makeText(
+                        this@LoginActivity,
+                        "Please make at least 8 characters for password",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
 
             }
         }
     }
 
-    private fun formValidation() : Boolean{
-
-        val email = binding.edLoginEmail.text.toString().trim()
-        val password = binding.edLoginPassword.text.toString().trim()
-
-        var valid = false
-
-        binding.edLoginEmail.doOnTextChanged { text, start, before, count ->
-            if (text!!.isEmpty()){
-                binding.edLoginEmailCons.error = "Email tidak boleh kosong"
-            }else if (!text.isValidEmail()){
-                binding.edLoginEmailCons.error = "Email tidak valid"
-            } else{
-                binding.edLoginEmailCons.error = null
-            }
-        }
-
-        binding.edLoginPassword.doOnTextChanged { text, start, before, count ->
-            if (text!!.isEmpty()){
-                binding.edLoginPasswordCons.error = "Password tidak boleh kosong"
-            }else if (text.length < 8){
-                binding.edLoginPasswordCons.error = "Password tidak boleh kurang dari 8 karakter"
-            }else{
-                binding.edLoginPasswordCons.error = null
-            }
-        }
-
-        if (binding.edLoginEmailCons.error == null && binding.edLoginPasswordCons.error == null){
-            valid = true
-        }
-
-        //Empty Check
-        if (email.isEmpty() || password.isEmpty()){
-            valid = false
-        }
-        return valid
-    }
-
-    private fun CharSequence?.isValidEmail() = !isNullOrEmpty() && Patterns.EMAIL_ADDRESS.matcher(this).matches()
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE

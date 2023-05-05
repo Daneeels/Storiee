@@ -1,11 +1,5 @@
 package com.example.storiee.data.api
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
-import com.example.storiee.data.local.UserPreference
-import com.example.storiee.data.response.LoginResult
-import com.example.storiee.view.main.MainViewModel
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

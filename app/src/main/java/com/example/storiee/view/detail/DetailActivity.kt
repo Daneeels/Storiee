@@ -48,7 +48,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun setUserData(_user: Story) {
-        binding?.apply {
+        binding.apply {
             Glide.with(this@DetailActivity).load(_user.photoUrl).into(imageDetailIV)
             nameDetailTV.text = _user.name
             storyDescTV.text = _user.description

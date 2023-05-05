@@ -31,56 +31,29 @@
         app:layout_constraintStart_toStartOf="@+id/title_login_TV"
         app:layout_constraintTop_toBottomOf="@+id/title_login_TV" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/ed_login_email_cons"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.example.storiee.view.customView.MyEditTextEmail
+        android:id="@+id/ed_login_email"
+        style="@style/edittext"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
-        app:boxStrokeColor="@color/primary"
-        app:errorEnabled="true"
-        app:errorIconDrawable="@drawable/baseline_error_24"
-        app:hintTextColor="@color/primary"
+        android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/desc_login_TV"
         app:layout_constraintTop_toBottomOf="@+id/desc_login_TV"
-        app:startIconDrawable="@drawable/baseline_email_24">
+        app:startIconDrawable="@drawable/baseline_email_24" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/ed_login_email"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/ed_login_password_cons"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.example.storiee.view.customView.MyEditTextPass
+        android:id="@+id/ed_login_password"
+        style="@style/edittext"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="32dp"
-        app:boxStrokeColor="@color/primary"
-        app:endIconMode="password_toggle"
-        app:errorEnabled="true"
-        app:errorIconDrawable="@drawable/baseline_error_24"
-        app:hintTextColor="@color/primary"
-        app:startIconDrawable="@drawable/baseline_lock_24"
+        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/ed_login_email_cons"
-        app:layout_constraintTop_toBottomOf="@+id/ed_login_email_cons">
+        app:layout_constraintStart_toStartOf="@+id/ed_login_email"
+        app:layout_constraintTop_toBottomOf="@+id/ed_login_email" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/ed_login_password"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="@string/password"
-            android:inputType="textPassword" />
-    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/login_login_Btn"
@@ -94,7 +67,7 @@
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ed_login_password_cons" />
+        app:layout_constraintTop_toBottomOf="@+id/ed_login_password" />
 
     <ProgressBar
         android:id="@+id/progressBar"

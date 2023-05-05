@@ -4,14 +4,12 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.util.Patterns
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.doOnTextChanged
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -36,7 +34,6 @@ class RegisterActivity : AppCompatActivity() {
 
         setupView()
         setupViewModel()
-        formValidation()
         setupAction()
     }
 
@@ -65,6 +62,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+
     private fun setupAction() {
 
         binding.registerRegisterBtn.setOnClickListener {
@@ -72,83 +70,50 @@ class RegisterActivity : AppCompatActivity() {
                 val email = binding.edRegisterEmail.text.toString()
                 val password = binding.edRegisterPassword.text.toString()
 
-                if(!formValidation()){
+                if(!(name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty())){
                     Toast.makeText(this@RegisterActivity, "Something went wrong", Toast.LENGTH_LONG).show()
                 }else{
-                    registerViewModel.saveUser(UserModel(name, email, password, false))
-                    registerViewModel.register(name, email, password)
+                    if (password.length >= 8) {
+                        registerViewModel.saveUser(UserModel(name, email, password, false))
+                        registerViewModel.register(name, email, password)
 
-                    registerViewModel.message.observe(this) { messageStatus ->
-                        if (messageStatus == "User created"){
-                            AlertDialog.Builder(this).apply {
-                                setTitle("Mantap")
-                                setMessage("Register berhasil")
-                                setPositiveButton("Lanjut") { _, _ ->
-                                    finish()
+                        registerViewModel.message.observe(this) { messageStatus ->
+                            when (messageStatus) {
+                                "User created" -> {
+                                    AlertDialog.Builder(this).apply {
+                                        setTitle("Mantap")
+                                        setMessage("Register berhasil")
+                                        setPositiveButton("Lanjut") { _, _ ->
+                                            finish()
+                                        }
+                                        create()
+                                        show()
+                                    }
                                 }
-                                create()
-                                show()
+                                "Email is already taken" -> {
+                                    Toast.makeText(
+                                        this@RegisterActivity,
+                                        messageStatus.toString(),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                                else -> {
+                                    Log.e("Cek status", messageStatus)
+                                }
                             }
-                        }else if (messageStatus == "Email is already taken"){
-                            Toast.makeText(this@RegisterActivity, messageStatus.toString(), Toast.LENGTH_LONG).show()
-                        }else{
-                            Log.e("Cek status", messageStatus)
                         }
+                    }
+                    else{
+                        Toast.makeText(
+                            this@RegisterActivity,
+                            "Please make at least 8 characters for password",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
 
                 }
         }
     }
-
-    private fun formValidation() : Boolean{
-
-        val name = binding.edRegisterName.text.toString().trim()
-        val email = binding.edRegisterEmail.text.toString().trim()
-        val password = binding.edRegisterPassword.text.toString().trim()
-
-        var valid = false
-
-        binding.edRegisterName.doOnTextChanged { text, start, before, count ->
-            if (text!!.isEmpty()){
-                binding.edRegisterNameCons.error = "Nama tidak boleh kosong"
-            }else{
-                binding.edRegisterNameCons.error = null
-            }
-        }
-
-        binding.edRegisterEmail.doOnTextChanged { text, start, before, count ->
-            if (text!!.isEmpty()){
-                binding.edRegisterEmailCons.error = "Email tidak boleh kosong"
-            }else if (!text.isValidEmail()){
-                binding.edRegisterEmailCons.error = "Email tidak valid"
-            } else{
-                binding.edRegisterEmailCons.error = null
-            }
-        }
-
-        binding.edRegisterPassword.doOnTextChanged { text, start, before, count ->
-            if (text!!.isEmpty()){
-                binding.edRegisterPasswordCons.error = "Password tidak boleh kosong"
-            }else if (text.length < 8){
-                binding.edRegisterPasswordCons.error = "Password tidak boleh kurang dari 8 karakter"
-            }else{
-                binding.edRegisterPasswordCons.error = null
-            }
-        }
-
-        if (binding.edRegisterNameCons.error == null && binding.edRegisterEmailCons.error == null && binding.edRegisterPasswordCons.error == null){
-            valid = true
-        }
-
-        //Empty Check
-        if (name.isEmpty() || email.isEmpty() || password.isEmpty()){
-            valid = false
-        }
-
-        return valid
-    }
-
-    private fun CharSequence?.isValidEmail() = !isNullOrEmpty() && Patterns.EMAIL_ADDRESS.matcher(this).matches()
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
