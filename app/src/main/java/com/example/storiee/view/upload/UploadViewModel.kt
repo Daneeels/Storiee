@@ -27,7 +27,7 @@ class UploadViewModel(private val pref: UserPreference) : ViewModel() {
 
         _isLoading.value = true
 
-        ApiConfig.instance.uploadStory("Bearer $token", imageMultipart, description).enqueue(object :
+        ApiConfig.getApiService().uploadStory("Bearer $token", imageMultipart, description).enqueue(object :
             Callback<FileUploadResponse> {
             override fun onResponse(
                 call: Call<FileUploadResponse>,

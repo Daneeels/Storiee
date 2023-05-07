@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.storiee.LoadingStateAdapter
 import com.example.storiee.ViewModelFactory
 import com.example.storiee.data.local.UserPreference
 import com.example.storiee.data.response.ListStoryItem
@@ -62,12 +64,27 @@ class MainActivity : AppCompatActivity() {
             if (user.isLogin) {
 
                 mainViewModel.getUserSession().observe(this){session ->
-                    mainViewModel.getAllStories("Bearer " + session.token)
-                } 
+                    val adapter = MainAdapter()
+                    val layoutManager = LinearLayoutManager(this)
 
-                mainViewModel.stories.observe(this){story ->
-                    runRV(story)
+                    binding.mainRv.layoutManager = layoutManager
+                    binding.mainRv.adapter = adapter
+
+                    binding.mainRv.adapter = adapter.withLoadStateFooter(
+                        footer = LoadingStateAdapter {
+                            adapter.retry()
+                        }
+                    )
+
+                    mainViewModel.getAllStories(session.token).observe(this) {
+                        adapter.submitData(lifecycle, it)
+                    }
                 }
+
+//                mainViewModel.stories.observe(this){story ->
+//                    runRV(story)
+//                }
+
 
             } else {
                 startActivity(Intent(this, WelcomeActivity::class.java))
@@ -77,11 +94,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupAction() {
-        binding.logoutBtn.setOnClickListener {
-            mainViewModel.logout()
-        }
-
-        binding.addButton.setOnClickListener {
+        binding.addBtn.setOnClickListener {
             val intent = Intent(this@MainActivity, UploadActivity::class.java)
             startActivity(intent)
         }
@@ -90,12 +103,11 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, MapsActivity::class.java)
             startActivity(intent)
         }
-    }
 
-    private fun runRV(listStories: List<ListStoryItem>){
-        binding.mainRv.layoutManager = LinearLayoutManager(this)
-        val mainAdapter = MainAdapter(listStories)
-        binding.mainRv.adapter = mainAdapter
+        binding.logOutBtn.setOnClickListener {
+            mainViewModel.logout()
+        }
+
     }
 
 }

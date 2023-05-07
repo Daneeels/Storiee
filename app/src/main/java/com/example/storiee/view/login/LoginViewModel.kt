@@ -28,7 +28,7 @@ class LoginViewModel(private val pref: UserPreference) : ViewModel() {
         _isLoading.value = true
         _message.value = ""
 
-        ApiConfig.instance.login(email, password).enqueue(object : Callback<UserLoginResponse> {
+        ApiConfig.getApiService().login(email, password).enqueue(object : Callback<UserLoginResponse> {
 
             override fun onResponse(call: Call<UserLoginResponse>, response: Response<UserLoginResponse>) {
 

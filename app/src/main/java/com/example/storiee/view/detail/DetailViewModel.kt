@@ -21,7 +21,7 @@ class DetailViewModel(private val pref: UserPreference) : ViewModel() {
 
     fun getDetailStory(token: String, id: String) {
 
-        ApiConfig.instance.getDetailStory("Bearer $token", id).enqueue(object : Callback<DetailStoryResponse> {
+        ApiConfig.getApiService().getDetailStory("Bearer $token", id).enqueue(object : Callback<DetailStoryResponse> {
             override fun onResponse(
                 call: Call<DetailStoryResponse>,
                 response: Response<DetailStoryResponse>

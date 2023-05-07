@@ -28,7 +28,7 @@ class RegisterViewModel(private val pref: UserPreference) : ViewModel(){
         _isLoading.value = true
         _message.value = ""
 
-        ApiConfig.instance.register(name, email, password).enqueue(
+        ApiConfig.getApiService().register(name, email, password).enqueue(
             object : Callback<UserRegisterResponse> {
 
             override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
