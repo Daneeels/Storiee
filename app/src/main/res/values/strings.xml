@@ -20,4 +20,6 @@
     <string name="upload">Upload</string>
     <string name="story_image">Story Image</string>
     <string name="password_requirement">Password must contain at least 8 characters</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="open_maps">Open Maps</string>
 </resources>

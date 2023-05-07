@@ -16,6 +16,7 @@ import com.example.storiee.ViewModelFactory
 import com.example.storiee.data.local.UserPreference
 import com.example.storiee.data.response.ListStoryItem
 import com.example.storiee.databinding.ActivityMainBinding
+import com.example.storiee.view.maps.MapsActivity
 import com.example.storiee.view.upload.UploadActivity
 import com.example.storiee.view.welcome.WelcomeActivity
 
@@ -82,6 +83,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.addButton.setOnClickListener {
             val intent = Intent(this@MainActivity, UploadActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.mapsBtn.setOnClickListener {
+            val intent = Intent(this@MainActivity, MapsActivity::class.java)
             startActivity(intent)
         }
     }

@@ -6,6 +6,7 @@ import com.example.storiee.data.local.UserPreference
 import com.example.storiee.view.detail.DetailViewModel
 import com.example.storiee.view.login.LoginViewModel
 import com.example.storiee.view.main.MainViewModel
+import com.example.storiee.view.maps.MapsViewModel
 import com.example.storiee.view.register.RegisterViewModel
 import com.example.storiee.view.upload.UploadViewModel
 
@@ -28,6 +29,9 @@ class ViewModelFactory(private val pref: UserPreference) : ViewModelProvider.New
             }
             modelClass.isAssignableFrom(UploadViewModel::class.java) -> {
                 UploadViewModel(pref) as T
+            }
+            modelClass.isAssignableFrom(MapsViewModel::class.java) -> {
+                MapsViewModel(pref) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }
