@@ -168,7 +168,7 @@ class UploadActivity : AppCompatActivity() {
     //Upload Section
     private fun uploadStory() {
 
-        uploadViewModel.getUserSession().observe(this) {token ->
+        //uploadViewModel.getUserSession().observe(this) {token ->
             val description = binding.edDescription.text.toString().toRequestBody("text/plain".toMediaType())
 
             if (getFile != null && binding.edDescription.text.toString().isNotEmpty()) {
@@ -181,7 +181,8 @@ class UploadActivity : AppCompatActivity() {
                     requestImageFile
                 )
 
-                uploadViewModel.uploadStory(token.token, imageMultipart, description)
+                val pref = com.example.storiee.data.local.Preference(applicationContext)
+                uploadViewModel.uploadStory(pref.getToken().toString(), imageMultipart, description, -3.0191087f, 122.5236612f)
 
                 uploadViewModel.isLoading.observe(this) {isLoading ->
                     showLoading(isLoading)
@@ -197,7 +198,7 @@ class UploadActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this@UploadActivity, "Please fill all inputs", Toast.LENGTH_SHORT).show()
             }
-        }
+        //}
 
     }
 

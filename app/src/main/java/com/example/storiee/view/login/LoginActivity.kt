@@ -79,12 +79,19 @@ class LoginActivity : AppCompatActivity() {
 
                     loginViewModel.message.observe(this) { messageStatus ->
                         if (messageStatus == "success"){
-                            loginViewModel.login()
+//                            loginViewModel.login()
 
-                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                            startActivity(intent)
-                            finish()
+                            loginViewModel.data.observe(this){session ->
+
+                                val pref = com.example.storiee.data.local.Preference(applicationContext)
+                                pref.saveToken(session.token)
+
+                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                                startActivity(intent)
+                                finish()
+
+                            }
                         }else if (messageStatus == "User not found"){
                             Toast.makeText(this@LoginActivity, messageStatus.toString(), Toast.LENGTH_LONG).show()
                         }else{

@@ -21,13 +21,16 @@ import com.example.storiee.databinding.ActivityMainBinding
 import com.example.storiee.view.maps.MapsActivity
 import com.example.storiee.view.upload.UploadActivity
 import com.example.storiee.view.welcome.WelcomeActivity
+import androidx.activity.viewModels
 
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mainViewModel: MainViewModel
+    private val mainViewModel: MainViewModel by viewModels {
+        MainViewModel.ViewModelFactory(this)
+    }
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,42 +58,44 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        mainViewModel = ViewModelProvider(
-            this,
-            ViewModelFactory(UserPreference.getInstance(dataStore))
-        )[MainViewModel::class.java]
+//        mainViewModel = ViewModelProvider(
+//            this,
+//            ViewModelFactory(UserPreference.getInstance(dataStore))
+//        )[MainViewModel::class.java]
 
-        mainViewModel.getUser().observe(this) { user ->
-            if (user.isLogin) {
+        //mainViewModel.getUser().observe(this) { user ->
 
-                mainViewModel.getUserSession().observe(this){session ->
-                    val adapter = MainAdapter()
-                    val layoutManager = LinearLayoutManager(this)
+        val pref = com.example.storiee.data.local.Preference(applicationContext)
 
-                    binding.mainRv.layoutManager = layoutManager
-                    binding.mainRv.adapter = adapter
+        if (pref.getToken() != null) {
 
-                    binding.mainRv.adapter = adapter.withLoadStateFooter(
-                        footer = LoadingStateAdapter {
-                            adapter.retry()
-                        }
-                    )
+            val adapter = MainAdapter()
+            val layoutManager = LinearLayoutManager(this)
 
-                    mainViewModel.getAllStories(session.token).observe(this) {
-                        adapter.submitData(lifecycle, it)
-                    }
+            binding.mainRv.layoutManager = layoutManager
+            binding.mainRv.adapter = adapter
+
+            binding.mainRv.adapter = adapter.withLoadStateFooter(
+                footer = LoadingStateAdapter {
+                    adapter.retry()
                 }
+            )
+
+            mainViewModel.stories.observe(this){
+                adapter.submitData(lifecycle, it)
+            }
+
 
 //                mainViewModel.stories.observe(this){story ->
 //                    runRV(story)
 //                }
 
 
-            } else {
-                startActivity(Intent(this, WelcomeActivity::class.java))
-                finish()
-            }
+        } else {
+            startActivity(Intent(this, WelcomeActivity::class.java))
+            finish()
         }
+        //}
     }
 
     private fun setupAction() {
@@ -105,7 +110,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.logOutBtn.setOnClickListener {
-            mainViewModel.logout()
+//            mainViewModel.logout()
+            val pref = com.example.storiee.data.local.Preference(applicationContext)
+            pref.clearToken()
+
+            val intent = Intent(this@MainActivity, WelcomeActivity::class.java)
+            startActivity(intent)
         }
 
     }

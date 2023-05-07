@@ -20,6 +20,9 @@ class LoginViewModel(private val pref: UserPreference) : ViewModel() {
     private val _message = MutableLiveData<String>()
     val message: LiveData<String> = _message
 
+    private val _data = MutableLiveData<LoginResult>()
+    val data: LiveData<LoginResult> = _data
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
@@ -36,10 +39,11 @@ class LoginViewModel(private val pref: UserPreference) : ViewModel() {
 
                 if (response.isSuccessful){
                     _message.value = response.body()?.message
+                    _data.value = response.body()?.loginResult
 
-                    viewModelScope.launch {
-                        pref.saveUserSession(LoginResult(response.body()?.loginResult!!.name, response.body()?.loginResult!!.userId, response.body()?.loginResult!!.token))
-                    }
+//                    viewModelScope.launch {
+//                        pref.saveUserSession(LoginResult(response.body()?.loginResult!!.name, response.body()?.loginResult!!.userId, response.body()?.loginResult!!.token))
+//                    }
                     Log.e("LOGIN SUCCESS", _message.value.toString())
 
                 }else{
@@ -58,11 +62,11 @@ class LoginViewModel(private val pref: UserPreference) : ViewModel() {
 
 
 
-    fun login() {
-        viewModelScope.launch {
-            pref.login()
-        }
-    }
+//    fun login() {
+//        viewModelScope.launch {
+//            pref.login()
+//        }
+//    }
 
 
 }

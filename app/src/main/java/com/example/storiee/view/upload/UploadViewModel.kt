@@ -23,11 +23,11 @@ class UploadViewModel(private val pref: UserPreference) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    fun uploadStory(token :String, imageMultipart: MultipartBody.Part, description : RequestBody){
+    fun uploadStory(token :String, imageMultipart: MultipartBody.Part, description : RequestBody, lat: Float, lon: Float){
 
         _isLoading.value = true
 
-        ApiConfig.getApiService().uploadStory("Bearer $token", imageMultipart, description).enqueue(object :
+        ApiConfig.getApiService().uploadStory("Bearer $token", imageMultipart, description, lat, lon).enqueue(object :
             Callback<FileUploadResponse> {
             override fun onResponse(
                 call: Call<FileUploadResponse>,
@@ -52,8 +52,8 @@ class UploadViewModel(private val pref: UserPreference) : ViewModel() {
         })
     }
 
-    fun getUserSession(): LiveData<LoginResult> {
-        return pref.getUserSession().asLiveData()
-    }
+//    fun getUserSession(): LiveData<LoginResult> {
+//        return pref.getUserSession().asLiveData()
+//    }
 
 }

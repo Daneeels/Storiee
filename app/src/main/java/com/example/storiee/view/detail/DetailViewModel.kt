@@ -39,7 +39,7 @@ class DetailViewModel(private val pref: UserPreference) : ViewModel() {
         })
     }
 
-    fun getUserSession(): LiveData<LoginResult> {
-        return pref.getUserSession().asLiveData()
-    }
+//    fun getUserSession(): LiveData<LoginResult> {
+//        return pref.getUserSession().asLiveData()
+//    }
 }

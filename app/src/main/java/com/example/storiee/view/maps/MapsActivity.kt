@@ -42,9 +42,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         setupViewModel()
 
-        mapsViewModel.getUserSession().observe(this){session ->
-            mapsViewModel.getAllStoriesLocation("Bearer " + session.token)
-        }
+//        mapsViewModel.getUserSession().observe(this){session ->
+//        }
+
+        val pref = com.example.storiee.data.local.Preference(applicationContext)
+        mapsViewModel.getAllStoriesLocation("Bearer " + pref.getToken().toString())
 
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment

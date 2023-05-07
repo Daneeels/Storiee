@@ -14,9 +14,9 @@ class MapsViewModel(private val pref: UserPreference) : ViewModel() {
     private val _stories = MutableLiveData<List<ListStoryItem>>()
     val stories: LiveData<List<ListStoryItem>> = _stories
 
-    fun getUserSession(): LiveData<LoginResult> {
-        return pref.getUserSession().asLiveData()
-    }
+//    fun getUserSession(): LiveData<LoginResult> {
+//        return pref.getUserSession().asLiveData()
+//    }
 
     fun getAllStoriesLocation(token: String){
 

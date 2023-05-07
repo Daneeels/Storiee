@@ -66,52 +66,52 @@ class RegisterActivity : AppCompatActivity() {
     private fun setupAction() {
 
         binding.registerRegisterBtn.setOnClickListener {
-                val name = binding.edRegisterName.text.toString()
-                val email = binding.edRegisterEmail.text.toString()
-                val password = binding.edRegisterPassword.text.toString()
+            val name = binding.edRegisterName.text.toString()
+            val email = binding.edRegisterEmail.text.toString()
+            val password = binding.edRegisterPassword.text.toString()
 
-                if(!(name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty())){
-                    Toast.makeText(this@RegisterActivity, "Something went wrong", Toast.LENGTH_LONG).show()
-                }else{
-                    if (password.length >= 8) {
-                        registerViewModel.saveUser(UserModel(name, email, password, false))
-                        registerViewModel.register(name, email, password)
+            if(!(name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty())){
+                Toast.makeText(this@RegisterActivity, "Something went wrong", Toast.LENGTH_LONG).show()
+            }else{
+                if (password.length >= 8) {
+                    //registerViewModel.saveUser(UserModel(name, email, password, false))
+                    registerViewModel.register(name, email, password)
 
-                        registerViewModel.message.observe(this) { messageStatus ->
-                            when (messageStatus) {
-                                "User created" -> {
-                                    AlertDialog.Builder(this).apply {
-                                        setTitle("Mantap")
-                                        setMessage("Register berhasil")
-                                        setPositiveButton("Lanjut") { _, _ ->
-                                            finish()
-                                        }
-                                        create()
-                                        show()
+                    registerViewModel.message.observe(this) { messageStatus ->
+                        when (messageStatus) {
+                            "User created" -> {
+                                AlertDialog.Builder(this).apply {
+                                    setTitle("Mantap")
+                                    setMessage("Register berhasil")
+                                    setPositiveButton("Lanjut") { _, _ ->
+                                        finish()
                                     }
+                                    create()
+                                    show()
                                 }
-                                "Email is already taken" -> {
-                                    Toast.makeText(
-                                        this@RegisterActivity,
-                                        messageStatus.toString(),
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                                else -> {
-                                    Log.e("Cek status", messageStatus)
-                                }
+                            }
+                            "Email is already taken" -> {
+                                Toast.makeText(
+                                    this@RegisterActivity,
+                                    messageStatus.toString(),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                            else -> {
+                                Log.e("Cek status", messageStatus)
                             }
                         }
                     }
-                    else{
-                        Toast.makeText(
-                            this@RegisterActivity,
-                            "Please make at least 8 characters for password",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-
                 }
+                else{
+                    Toast.makeText(
+                        this@RegisterActivity,
+                        "Please make at least 8 characters for password",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+            }
         }
     }
 

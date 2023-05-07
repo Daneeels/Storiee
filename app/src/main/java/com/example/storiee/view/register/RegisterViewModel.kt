@@ -31,31 +31,31 @@ class RegisterViewModel(private val pref: UserPreference) : ViewModel(){
         ApiConfig.getApiService().register(name, email, password).enqueue(
             object : Callback<UserRegisterResponse> {
 
-            override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
+                override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
 
-                _isLoading.value = false
+                    _isLoading.value = false
 
-                if (response.isSuccessful){
-                    _message.value = response.body()?.message
-                    Log.e("REGISTER SUCCESS", _message.value.toString())
-                }else{
-                    val jObjError = JSONObject(response.errorBody()!!.string())
-                    _message.value = jObjError.getString("message").toString()
+                    if (response.isSuccessful){
+                        _message.value = response.body()?.message
+                        Log.e("REGISTER SUCCESS", _message.value.toString())
+                    }else{
+                        val jObjError = JSONObject(response.errorBody()!!.string())
+                        _message.value = jObjError.getString("message").toString()
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<UserRegisterResponse>, t: Throwable) {
-                Log.e("REGISTER ERROR", t.message.toString())
-            }
+                override fun onFailure(call: Call<UserRegisterResponse>, t: Throwable) {
+                    Log.e("REGISTER ERROR", t.message.toString())
+                }
 
-        })
+            })
     }
 
-    fun saveUser(user: UserModel) {
-        viewModelScope.launch {
-            pref.saveUser(user)
-        }
-    }
+//    fun saveUser(user: UserModel) {
+//        viewModelScope.launch {
+//            pref.saveUser(user)
+//        }
+//    }
 
 
 

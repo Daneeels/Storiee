@@ -36,10 +36,12 @@ class DetailActivity : AppCompatActivity() {
         val storyId = intent.getStringExtra(ID_KEY).toString()
         storyIdData = storyId
 
-        detailViewModel.getUserSession().observe(this) { token ->
-            this.token = token.token
-            detailViewModel.getDetailStory(this.token, storyIdData)
-        }
+//        detailViewModel.getUserSession().observe(this) { token ->
+//            this.token = token.token
+//        }
+
+        val pref = com.example.storiee.data.local.Preference(applicationContext)
+        detailViewModel.getDetailStory(pref.getToken().toString(), storyIdData)
 
         detailViewModel.story.observe(this) { story ->
             setUserData(story)
