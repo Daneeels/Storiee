@@ -18,7 +18,6 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import com.example.storiee.ViewModelFactory
 import com.example.storiee.data.local.UserPreference
-import com.example.storiee.data.model.UserModel
 import com.example.storiee.databinding.ActivityRegisterBinding
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
@@ -70,11 +69,15 @@ class RegisterActivity : AppCompatActivity() {
         binding.edRegisterPassword.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
+
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                binding.registerRegisterBtn.isEnabled = binding.edRegisterPassword.text?.length!! >= 8
+                binding.registerRegisterBtn.isEnabled =
+                    binding.edRegisterPassword.text?.length!! >= 8
             }
+
             override fun afterTextChanged(s: Editable) {
-                binding.registerRegisterBtn.isEnabled = binding.edRegisterPassword.text?.length!! >= 8
+                binding.registerRegisterBtn.isEnabled =
+                    binding.edRegisterPassword.text?.length!! >= 8
             }
         })
 
@@ -86,38 +89,38 @@ class RegisterActivity : AppCompatActivity() {
             val email = binding.edRegisterEmail.text.toString()
             val password = binding.edRegisterPassword.text.toString()
 
-            if(!(name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty())){
-                Toast.makeText(this@RegisterActivity, "Something went wrong", Toast.LENGTH_LONG).show()
-            }else{
-                    //registerViewModel.saveUser(UserModel(name, email, password, false))
+            if (!(name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty())) {
+                Toast.makeText(this@RegisterActivity, "Something went wrong", Toast.LENGTH_LONG)
+                    .show()
+            } else {
 
-                    registerViewModel.register(name, email, password)
+                registerViewModel.register(name, email, password)
 
-                    registerViewModel.message.observe(this) { messageStatus ->
-                        when (messageStatus) {
-                            "User created" -> {
-                                AlertDialog.Builder(this).apply {
-                                    setTitle("Mantap")
-                                    setMessage("Register berhasil")
-                                    setPositiveButton("Lanjut") { _, _ ->
-                                        finish()
-                                    }
-                                    create()
-                                    show()
+                registerViewModel.message.observe(this) { messageStatus ->
+                    when (messageStatus) {
+                        "User created" -> {
+                            AlertDialog.Builder(this).apply {
+                                setTitle("Mantap")
+                                setMessage("Register berhasil")
+                                setPositiveButton("Lanjut") { _, _ ->
+                                    finish()
                                 }
-                            }
-                            "Email is already taken" -> {
-                                Toast.makeText(
-                                    this@RegisterActivity,
-                                    messageStatus.toString(),
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                            else -> {
-                                Log.e("Cek status", messageStatus)
+                                create()
+                                show()
                             }
                         }
+                        "Email is already taken" -> {
+                            Toast.makeText(
+                                this@RegisterActivity,
+                                messageStatus.toString(),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        else -> {
+                            Log.e("Cek status", messageStatus)
+                        }
                     }
+                }
 
             }
         }

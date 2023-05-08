@@ -1,6 +1,5 @@
 package com.example.storiee
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.storiee.data.api.ApiService
@@ -27,7 +26,6 @@ class StoryPagingSource(
             val page = params.key ?: INITIAL_PAGE_INDEX
             val responseData = apiService.getAllStories("Bearer $token", page, params.loadSize)
 
-            Log.e("Cekk tokenn", token)
             LoadResult.Page(
                 data = responseData.listStory,
                 prevKey = if (page == 1) null else page - 1,

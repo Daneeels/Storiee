@@ -1,9 +1,7 @@
 package com.example.storiee.view.customView
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Canvas
-import android.provider.Settings.Global.getString
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet

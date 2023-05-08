@@ -21,7 +21,6 @@ class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
     private lateinit var storyIdData: String
-    private lateinit var token: String
     private lateinit var detailViewModel: DetailViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,10 +34,6 @@ class DetailActivity : AppCompatActivity() {
 
         val storyId = intent.getStringExtra(ID_KEY).toString()
         storyIdData = storyId
-
-//        detailViewModel.getUserSession().observe(this) { token ->
-//            this.token = token.token
-//        }
 
         val pref = com.example.storiee.data.local.Preference(applicationContext)
         detailViewModel.getDetailStory(pref.getToken().toString(), storyIdData)

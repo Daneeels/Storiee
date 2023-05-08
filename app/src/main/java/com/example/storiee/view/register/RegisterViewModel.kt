@@ -4,18 +4,15 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.storiee.data.api.ApiConfig
 import com.example.storiee.data.local.UserPreference
-import com.example.storiee.data.model.UserModel
 import com.example.storiee.data.response.UserRegisterResponse
-import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RegisterViewModel(private val pref: UserPreference) : ViewModel(){
+class RegisterViewModel(private val pref: UserPreference) : ViewModel() {
 
     private val _message = MutableLiveData<String>()
     val message: LiveData<String> = _message
@@ -23,7 +20,7 @@ class RegisterViewModel(private val pref: UserPreference) : ViewModel(){
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    fun register(name: String, email:String, password: String ){
+    fun register(name: String, email: String, password: String) {
 
         _isLoading.value = true
         _message.value = ""
@@ -31,14 +28,17 @@ class RegisterViewModel(private val pref: UserPreference) : ViewModel(){
         ApiConfig.getApiService().register(name, email, password).enqueue(
             object : Callback<UserRegisterResponse> {
 
-                override fun onResponse(call: Call<UserRegisterResponse>, response: Response<UserRegisterResponse>) {
+                override fun onResponse(
+                    call: Call<UserRegisterResponse>,
+                    response: Response<UserRegisterResponse>
+                ) {
 
                     _isLoading.value = false
 
-                    if (response.isSuccessful){
+                    if (response.isSuccessful) {
                         _message.value = response.body()?.message
                         Log.e("REGISTER SUCCESS", _message.value.toString())
-                    }else{
+                    } else {
                         val jObjError = JSONObject(response.errorBody()!!.string())
                         _message.value = jObjError.getString("message").toString()
                     }
@@ -50,13 +50,4 @@ class RegisterViewModel(private val pref: UserPreference) : ViewModel(){
 
             })
     }
-
-//    fun saveUser(user: UserModel) {
-//        viewModelScope.launch {
-//            pref.saveUser(user)
-//        }
-//    }
-
-
-
 }

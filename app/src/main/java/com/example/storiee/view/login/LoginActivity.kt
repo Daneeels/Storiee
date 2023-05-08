@@ -70,9 +70,11 @@ class LoginActivity : AppCompatActivity() {
         binding.edLoginPassword.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
+
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 binding.loginLoginBtn.isEnabled = binding.edLoginPassword.text?.length!! >= 8
             }
+
             override fun afterTextChanged(s: Editable) {
                 binding.loginLoginBtn.isEnabled = binding.edLoginPassword.text?.length!! >= 8
             }
@@ -83,35 +85,40 @@ class LoginActivity : AppCompatActivity() {
             val email = binding.edLoginEmail.text.toString().trim()
             val password = binding.edLoginPassword.text.toString().trim()
 
-            if(!(email.isNotEmpty() && password.isNotEmpty())){
+            if (!(email.isNotEmpty() && password.isNotEmpty())) {
                 Toast.makeText(this@LoginActivity, "Something went wrong", Toast.LENGTH_LONG).show()
-            }else{
+            } else {
 
                 if (password.length >= 8) {
-                    loginViewModel.loginRequest(email,password)
+                    loginViewModel.loginRequest(email, password)
 
                     loginViewModel.message.observe(this) { messageStatus ->
-                        if (messageStatus == "success"){
+                        if (messageStatus == "success") {
 
-                            loginViewModel.data.observe(this){session ->
+                            loginViewModel.data.observe(this) { session ->
 
-                                val pref = com.example.storiee.data.local.Preference(applicationContext)
+                                val pref =
+                                    com.example.storiee.data.local.Preference(applicationContext)
                                 pref.saveToken(session.token)
 
                                 val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                                intent.flags =
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                                 startActivity(intent)
                                 finish()
 
                             }
-                        }else if (messageStatus == "User not found"){
-                            Toast.makeText(this@LoginActivity, messageStatus.toString(), Toast.LENGTH_LONG).show()
-                        }else{
+                        } else if (messageStatus == "User not found") {
+                            Toast.makeText(
+                                this@LoginActivity,
+                                messageStatus.toString(),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
                             Log.e("Cek status", messageStatus)
                         }
                     }
-                }
-                else{
+                } else {
                     Toast.makeText(
                         this@LoginActivity,
                         "Please make at least 8 characters for password",

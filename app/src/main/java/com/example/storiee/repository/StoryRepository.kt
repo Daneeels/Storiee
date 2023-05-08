@@ -9,7 +9,10 @@ import com.example.storiee.StoryPagingSource
 import com.example.storiee.data.api.ApiService
 import com.example.storiee.data.response.ListStoryItem
 
-class StoryRepository(private val apiService: ApiService, private val pref: com.example.storiee.data.local.Preference) {
+class StoryRepository(
+    private val apiService: ApiService,
+    private val pref: com.example.storiee.data.local.Preference
+) {
 
     val token = pref.getToken()
 

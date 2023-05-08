@@ -2,18 +2,15 @@ package com.example.storiee.view.upload
 
 import android.Manifest
 import android.content.ContentResolver
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -175,7 +172,8 @@ class UploadActivity : AppCompatActivity() {
     //Upload Section
     private fun uploadStory() {
 
-        val description = binding.edDescription.text.toString().toRequestBody("text/plain".toMediaType())
+        val description =
+            binding.edDescription.text.toString().toRequestBody("text/plain".toMediaType())
 
         if (ContextCompat.checkSelfPermission(
                 this.applicationContext,
@@ -203,7 +201,7 @@ class UploadActivity : AppCompatActivity() {
                     )
 
                     val pref = com.example.storiee.data.local.Preference(applicationContext)
-                    if (binding.checkBoxLocation.isChecked){
+                    if (binding.checkBoxLocation.isChecked) {
                         uploadViewModel.uploadStoryLocation(
                             pref.getToken().toString(),
                             imageMultipart,
@@ -211,7 +209,7 @@ class UploadActivity : AppCompatActivity() {
                             lat,
                             lon
                         )
-                    }else{
+                    } else {
                         uploadViewModel.uploadStory(
                             pref.getToken().toString(),
                             imageMultipart,
@@ -223,7 +221,8 @@ class UploadActivity : AppCompatActivity() {
                         showLoading(isLoading)
                         if (!isLoading) {
                             val intent = Intent(this@UploadActivity, MainActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            intent.flags =
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                             finish()
                             startActivity(intent)
                         }
@@ -231,22 +230,21 @@ class UploadActivity : AppCompatActivity() {
 
 
                 } else {
-                    Toast.makeText(this@UploadActivity, "Please fill all inputs", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@UploadActivity,
+                        "Please fill all inputs",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
             }.addOnFailureListener { error ->
-                Toast.makeText(this@UploadActivity, error.message.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@UploadActivity, error.message.toString(), Toast.LENGTH_SHORT)
+                    .show()
             }
 
         } else {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
-
-
-        //uploadViewModel.getUserSession().observe(this) {token -
-
-
-        //}
 
     }
 

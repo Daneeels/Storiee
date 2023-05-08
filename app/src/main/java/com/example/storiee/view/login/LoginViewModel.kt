@@ -4,12 +4,10 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.storiee.data.api.ApiConfig
 import com.example.storiee.data.local.UserPreference
 import com.example.storiee.data.response.LoginResult
 import com.example.storiee.data.response.UserLoginResponse
-import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,42 +29,35 @@ class LoginViewModel(private val pref: UserPreference) : ViewModel() {
         _isLoading.value = true
         _message.value = ""
 
-        ApiConfig.getApiService().login(email, password).enqueue(object : Callback<UserLoginResponse> {
+        ApiConfig.getApiService().login(email, password)
+            .enqueue(object : Callback<UserLoginResponse> {
 
-            override fun onResponse(call: Call<UserLoginResponse>, response: Response<UserLoginResponse>) {
+                override fun onResponse(
+                    call: Call<UserLoginResponse>,
+                    response: Response<UserLoginResponse>
+                ) {
 
-                _isLoading.value = false
+                    _isLoading.value = false
 
-                if (response.isSuccessful){
-                    _message.value = response.body()?.message
-                    _data.value = response.body()?.loginResult
+                    if (response.isSuccessful) {
+                        _message.value = response.body()?.message
+                        _data.value = response.body()?.loginResult
 
-//                    viewModelScope.launch {
-//                        pref.saveUserSession(LoginResult(response.body()?.loginResult!!.name, response.body()?.loginResult!!.userId, response.body()?.loginResult!!.token))
-//                    }
-                    Log.e("LOGIN SUCCESS", _message.value.toString())
+                        Log.e("LOGIN SUCCESS", _message.value.toString())
 
-                }else{
-                    val jObjError = JSONObject(response.errorBody()!!.string())
-                    _message.value = jObjError.getString("message").toString()
+                    } else {
+                        val jObjError = JSONObject(response.errorBody()!!.string())
+                        _message.value = jObjError.getString("message").toString()
+                    }
+
                 }
 
-            }
+                override fun onFailure(call: Call<UserLoginResponse>, t: Throwable) {
+                    Log.e("LOGIN ERROR", t.message.toString())
+                }
 
-            override fun onFailure(call: Call<UserLoginResponse>, t: Throwable) {
-                Log.e("LOGIN ERROR", t.message.toString())
-            }
-
-        })
+            })
     }
-
-
-
-//    fun login() {
-//        viewModelScope.launch {
-//            pref.login()
-//        }
-//    }
 
 
 }

@@ -4,24 +4,19 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.storiee.LoadingStateAdapter
-import com.example.storiee.ViewModelFactory
-import com.example.storiee.data.local.UserPreference
-import com.example.storiee.data.response.ListStoryItem
 import com.example.storiee.databinding.ActivityMainBinding
 import com.example.storiee.view.maps.MapsActivity
 import com.example.storiee.view.upload.UploadActivity
 import com.example.storiee.view.welcome.WelcomeActivity
-import androidx.activity.viewModels
 
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
@@ -58,13 +53,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-//        mainViewModel = ViewModelProvider(
-//            this,
-//            ViewModelFactory(UserPreference.getInstance(dataStore))
-//        )[MainViewModel::class.java]
-
-        //mainViewModel.getUser().observe(this) { user ->
-
         val pref = com.example.storiee.data.local.Preference(applicationContext)
 
         if (pref.getToken() != null) {
@@ -81,21 +69,14 @@ class MainActivity : AppCompatActivity() {
                 }
             )
 
-            mainViewModel.stories.observe(this){
+            mainViewModel.stories.observe(this) {
                 adapter.submitData(lifecycle, it)
             }
-
-
-//                mainViewModel.stories.observe(this){story ->
-//                    runRV(story)
-//                }
-
 
         } else {
             startActivity(Intent(this, WelcomeActivity::class.java))
             finish()
         }
-        //}
     }
 
     private fun setupAction() {
@@ -110,7 +91,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.logOutBtn.setOnClickListener {
-//            mainViewModel.logout()
             val pref = com.example.storiee.data.local.Preference(applicationContext)
             pref.clearToken()
 

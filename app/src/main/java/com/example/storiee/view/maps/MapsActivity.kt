@@ -2,11 +2,10 @@ package com.example.storiee.view.maps
 
 import android.content.ContentValues.TAG
 import android.content.Context
-import android.content.Intent
 import android.content.res.Resources
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -14,10 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.storiee.R
 import com.example.storiee.ViewModelFactory
 import com.example.storiee.data.local.UserPreference
-import com.example.storiee.data.response.ListStoryItem
 import com.example.storiee.databinding.ActivityMapsBinding
-import com.example.storiee.view.main.MainViewModel
-import com.example.storiee.view.welcome.WelcomeActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -42,9 +38,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         setupViewModel()
 
-//        mapsViewModel.getUserSession().observe(this){session ->
-//        }
-
         val pref = com.example.storiee.data.local.Preference(applicationContext)
         mapsViewModel.getAllStoriesLocation("Bearer " + pref.getToken().toString())
 
@@ -56,12 +49,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        mapsViewModel.stories.observe(this){story ->
-            for (loc in story){
-                mMap.addMarker(MarkerOptions().position(LatLng(loc.lat.toString().toDouble(),loc.lon.toString().toDouble())).title("Marker of ${loc.name}"))
+        mapsViewModel.stories.observe(this) { story ->
+            for (loc in story) {
+                mMap.addMarker(
+                    MarkerOptions().position(
+                        LatLng(
+                            loc.lat.toString().toDouble(),
+                            loc.lon.toString().toDouble()
+                        )
+                    ).title("Marker of ${loc.name}")
+                )
             }
 
-            val firstLocation = LatLng(story.get(0).lat.toString().toDouble(), story.get(0).lon.toString().toDouble())
+            val firstLocation = LatLng(
+                story.get(0).lat.toString().toDouble(),
+                story.get(0).lon.toString().toDouble()
+            )
             mMap.moveCamera(CameraUpdateFactory.newLatLng(firstLocation))
         }
 

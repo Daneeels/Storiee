@@ -4,11 +4,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import com.example.storiee.data.api.ApiConfig
 import com.example.storiee.data.local.UserPreference
 import com.example.storiee.data.response.FileUploadResponse
-import com.example.storiee.data.response.LoginResult
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -80,9 +78,4 @@ class UploadViewModel(private val pref: UserPreference) : ViewModel() {
             }
         })
     }
-
-//    fun getUserSession(): LiveData<LoginResult> {
-//        return pref.getUserSession().asLiveData()
-//    }
-
 }

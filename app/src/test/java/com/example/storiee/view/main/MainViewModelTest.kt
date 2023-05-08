@@ -76,6 +76,7 @@ class MainViewModelTest {
         differ.submitData(actualQuote)
         Assert.assertEquals(0, differ.snapshot().size)
     }
+
     class StoryPagingSource : PagingSource<Int, LiveData<List<ListStoryItem>>>() {
         companion object {
             fun snapshot(items: List<ListStoryItem>): PagingData<ListStoryItem> {

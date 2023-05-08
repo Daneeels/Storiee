@@ -1,7 +1,6 @@
 package com.example.storiee.view.main
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -35,12 +34,13 @@ class MainAdapter : PagingDataAdapter<ListStoryItem, MainAdapter.ViewHolder>(DIF
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainAdapter.ViewHolder {
-        val binding = StoryItemRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            StoryItemRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
     companion object {
-         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ListStoryItem>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ListStoryItem>() {
             override fun areItemsTheSame(oldItem: ListStoryItem, newItem: ListStoryItem): Boolean {
                 return oldItem == newItem
             }
