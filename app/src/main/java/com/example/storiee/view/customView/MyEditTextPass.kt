@@ -43,6 +43,7 @@ class MyEditTextPass : MyEditText {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if(!passwordValidation(s)){
                     error = resources.getString(R.string.password_requirement)
+
                 }
             }
 

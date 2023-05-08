@@ -3,6 +3,8 @@ package com.example.storiee.view.register
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.WindowInsets
@@ -65,7 +67,21 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun setupAction() {
 
+        binding.edRegisterPassword.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                binding.registerRegisterBtn.isEnabled = binding.edRegisterPassword.text?.length!! >= 8
+            }
+            override fun afterTextChanged(s: Editable) {
+                binding.registerRegisterBtn.isEnabled = binding.edRegisterPassword.text?.length!! >= 8
+            }
+        })
+
+
+
         binding.registerRegisterBtn.setOnClickListener {
+
             val name = binding.edRegisterName.text.toString()
             val email = binding.edRegisterEmail.text.toString()
             val password = binding.edRegisterPassword.text.toString()
@@ -73,8 +89,8 @@ class RegisterActivity : AppCompatActivity() {
             if(!(name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty())){
                 Toast.makeText(this@RegisterActivity, "Something went wrong", Toast.LENGTH_LONG).show()
             }else{
-                if (password.length >= 8) {
                     //registerViewModel.saveUser(UserModel(name, email, password, false))
+
                     registerViewModel.register(name, email, password)
 
                     registerViewModel.message.observe(this) { messageStatus ->
@@ -102,14 +118,6 @@ class RegisterActivity : AppCompatActivity() {
                             }
                         }
                     }
-                }
-                else{
-                    Toast.makeText(
-                        this@RegisterActivity,
-                        "Please make at least 8 characters for password",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
 
             }
         }

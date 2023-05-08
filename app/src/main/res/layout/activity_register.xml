@@ -49,7 +49,6 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="32dp"
-
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/ed_register_name"
@@ -66,7 +65,7 @@
         app:layout_constraintStart_toStartOf="@+id/ed_register_email"
         app:layout_constraintTop_toBottomOf="@+id/ed_register_email" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.example.storiee.view.customView.MyButton
         android:id="@+id/register_register_Btn"
         android:layout_width="match_parent"
         android:layout_height="60dp"

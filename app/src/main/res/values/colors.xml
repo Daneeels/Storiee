@@ -9,8 +9,8 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="primary">#14213d</color>
+    <color name="sub_primary">#414B62</color>
     <color name="error">#bc3e3e</color>
     <color name="background">#EFF0ED</color>
-
 
 </resources>

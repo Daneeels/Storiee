@@ -47,6 +47,14 @@ interface ApiService {
     fun uploadStory(
         @Header("Authorization") token: String,
         @Part file: MultipartBody.Part,
+        @Part("description") description: RequestBody
+    ): Call<FileUploadResponse>
+
+    @Multipart
+    @POST("/v1/stories")
+    fun uploadStoryLoc(
+        @Header("Authorization") token: String,
+        @Part file: MultipartBody.Part,
         @Part("description") description: RequestBody,
         @Part("lat") lat: Float? = null,
         @Part("lon") lon: Float? = null,

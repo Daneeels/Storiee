@@ -2,15 +2,18 @@ package com.example.storiee.view.upload
 
 import android.Manifest
 import android.content.ContentResolver
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,6 +30,8 @@ import com.example.storiee.data.local.UserPreference
 import com.example.storiee.databinding.ActivityUploadBinding
 import com.example.storiee.util.createCustomTempFile
 import com.example.storiee.view.main.MainActivity
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -40,6 +45,7 @@ class UploadActivity : AppCompatActivity() {
     private var getFile: File? = null
     private lateinit var currentPhotoPath: String
     private lateinit var uploadViewModel: UploadViewModel
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +61,7 @@ class UploadActivity : AppCompatActivity() {
                 REQUEST_CODE_PERMISSIONS
             )
         }
+
         binding.cameraBtn.setOnClickListener { startTakePhoto() }
         binding.galleryBtn.setOnClickListener { startGallery() }
         binding.uploadBtn.setOnClickListener { uploadStory() }
@@ -168,36 +175,77 @@ class UploadActivity : AppCompatActivity() {
     //Upload Section
     private fun uploadStory() {
 
-        //uploadViewModel.getUserSession().observe(this) {token ->
-            val description = binding.edDescription.text.toString().toRequestBody("text/plain".toMediaType())
+        val description = binding.edDescription.text.toString().toRequestBody("text/plain".toMediaType())
 
-            if (getFile != null && binding.edDescription.text.toString().isNotEmpty()) {
-                val file = reduceFileImage(getFile as File)
+        if (ContextCompat.checkSelfPermission(
+                this.applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
 
-                val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
-                val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
-                    "photo",
-                    file.name,
-                    requestImageFile
-                )
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-                val pref = com.example.storiee.data.local.Preference(applicationContext)
-                uploadViewModel.uploadStory(pref.getToken().toString(), imageMultipart, description, -3.0191087f, 122.5236612f)
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
 
-                uploadViewModel.isLoading.observe(this) {isLoading ->
-                    showLoading(isLoading)
-                    if (!isLoading){
-                        val intent = Intent(this@UploadActivity, MainActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                        finish()
-                        startActivity(intent)
+                val lat = location.latitude.toFloat()
+                val lon = location.longitude.toFloat()
+
+                if (getFile != null && binding.edDescription.text.toString().isNotEmpty()) {
+
+
+                    val file = reduceFileImage(getFile as File)
+
+                    val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
+                    val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+                        "photo",
+                        file.name,
+                        requestImageFile
+                    )
+
+                    val pref = com.example.storiee.data.local.Preference(applicationContext)
+                    if (binding.checkBoxLocation.isChecked){
+                        uploadViewModel.uploadStoryLocation(
+                            pref.getToken().toString(),
+                            imageMultipart,
+                            description,
+                            lat,
+                            lon
+                        )
+                    }else{
+                        uploadViewModel.uploadStory(
+                            pref.getToken().toString(),
+                            imageMultipart,
+                            description
+                        )
                     }
+
+                    uploadViewModel.isLoading.observe(this) { isLoading ->
+                        showLoading(isLoading)
+                        if (!isLoading) {
+                            val intent = Intent(this@UploadActivity, MainActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            finish()
+                            startActivity(intent)
+                        }
+                    }
+
+
+                } else {
+                    Toast.makeText(this@UploadActivity, "Please fill all inputs", Toast.LENGTH_SHORT).show()
                 }
 
-
-            } else {
-                Toast.makeText(this@UploadActivity, "Please fill all inputs", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener { error ->
+                Toast.makeText(this@UploadActivity, error.message.toString(), Toast.LENGTH_SHORT).show()
             }
+
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+
+
+        //uploadViewModel.getUserSession().observe(this) {token -
+
+
         //}
 
     }
@@ -215,6 +263,16 @@ class UploadActivity : AppCompatActivity() {
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
+
+    //My Location Permission
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                uploadStory()
+            }
+        }
 
     companion object {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)

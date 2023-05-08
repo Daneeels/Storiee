@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.WindowInsets
@@ -65,6 +67,17 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupAction() {
 
+        binding.edLoginPassword.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                binding.loginLoginBtn.isEnabled = binding.edLoginPassword.text?.length!! >= 8
+            }
+            override fun afterTextChanged(s: Editable) {
+                binding.loginLoginBtn.isEnabled = binding.edLoginPassword.text?.length!! >= 8
+            }
+        })
+
         binding.loginLoginBtn.setOnClickListener {
 
             val email = binding.edLoginEmail.text.toString().trim()
@@ -79,7 +92,6 @@ class LoginActivity : AppCompatActivity() {
 
                     loginViewModel.message.observe(this) { messageStatus ->
                         if (messageStatus == "success"){
-//                            loginViewModel.login()
 
                             loginViewModel.data.observe(this){session ->
 

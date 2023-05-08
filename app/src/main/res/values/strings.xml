@@ -22,4 +22,5 @@
     <string name="password_requirement">Password must contain at least 8 characters</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="open_maps">Open Maps</string>
+    <string name="add_location">Add Location</string>
 </resources>
